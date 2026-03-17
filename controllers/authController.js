@@ -1,13 +1,17 @@
-import * as authModel from '../models/userModel.js';
+import * as userModel from '../models/userModel.js';
+import bcrypt from 'bcrypt';
 
 export const createUser = async (req, res) => {
     try {
-        const data = req.body;
-        const newUser = await authModel.createUser(data);
+        const {name, email, password} = req.body;
+        const encryptPass = await bcrypt.hash(password, 10);
+        const newUser = await userModel.createUser(name, email, encryptPass);
 
         res.status(200).json({
         message: 'User creado exitosamente',
         data: newUser
+
+
     });
     } catch (error) {
         res.status(500).json({
@@ -15,4 +19,4 @@ export const createUser = async (req, res) => {
             error: error.message
         });
     }
-}
+};
